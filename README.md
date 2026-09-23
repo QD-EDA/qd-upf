@@ -108,3 +108,6 @@ python3 -m unittest discover -s tests -v
 ## License
 
 Apache License 2.0; see [LICENSE](LICENSE).
+
+See [the staged qualification roadmap](ROADMAP.md) for named pilots, unsupported
+cases, independent oracles, performance targets and release gates.
