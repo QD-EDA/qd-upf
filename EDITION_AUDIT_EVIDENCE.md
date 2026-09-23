@@ -73,3 +73,8 @@ applicability, topology binding, implementation checks, power states, corruption
 retention and Icarus/UVM runtime integration remain unimplemented. This change
 makes the edition boundary machine-readable; it adds no dynamic power behavior,
 IEEE conformance certification or production qualification.
+
+A fresh clone of `7f3eb20` passed all 34 tests under both Python versions and
+reproduced the four CLI outcomes above (including actual OpenTitan collateral).
+Reports matched after normalizing only the relocated tool-checkout prefix in
+fixture paths. This is same-host workspace independence, not a separate toolchain.
