@@ -15,7 +15,7 @@ not consulted. `isolation_declared` is not implemented isolation.
 
 ## Stages and interfaces
 
-1. **Next useful slice:** retain IEEE 1801-2018 as the provisional initial target and
+1. **Next useful slice:** target the user-supplied IEEE 1801-2024 (UPF 4.0) and
    make a command/option/semantic-clause conformance table against legally
    accessible authoritative text. Obtain access before implementing additional
    semantics. Retain the legacy bounded dialect as such; a requested unsupported
@@ -75,7 +75,7 @@ not consulted. `isolation_declared` is not implemented isolation.
 - Oracles: normative clause table with edition/page/section citations, second
   parser/checker, independent netlist tracing and power-aware simulation. A
   tutorial is context, not normative authority. Record access limitations.
-- Version matrix: Python 3.9/3.14, IEEE 1801-2018 only initially; pin frontend,
+- Version matrix: Python 3.9/3.14, IEEE 1801-2024 initially; pin frontend,
   synthesis tool, library revision and independent simulator/checker versions
   when owner inputs are available. Other editions remain unsupported.
   Pin Icarus compiler and vvp runtime together, the UVM source revision and any
@@ -167,3 +167,11 @@ applicability and precedence using the selected edition, verify library clamp an
 control polarity, then test power transitions with the real lifecycle decoder.
 The nonzero list alone does not specify the remaining bits, power states, drivers,
 control sequencing or a complete isolation strategy. Never invent those inputs.
+
+## Supplied normative text, 2026-09-23
+
+The user has supplied IEEE 1801-2024. It supersedes the provisional 2018 target;
+see IEEE1801_2024_REVIEW.md for its file identity and initial clause comparison.
+Normative text access is resolved. The common rules, semantic matrix, independent
+oracles, design bindings and power-aware runtime still require implementation and
+verification. The earlier access notes above describe the pre-upload state.
