@@ -15,7 +15,7 @@ not consulted. `isolation_declared` is not implemented isolation.
 
 ## Stages and interfaces
 
-1. **Next useful slice:** pin IEEE 1801-2018 as the initial intended edition and
+1. **Next useful slice:** retain IEEE 1801-2018 as the provisional initial target and
    make a command/option/semantic-clause conformance table against legally
    accessible authoritative text. Obtain access before implementing additional
    semantics. Retain the legacy bounded dialect as such; a requested unsupported
@@ -150,3 +150,20 @@ Primary source anchors (review pinned source, not just current web documentation
 - [OpenTitan pinmux fileset selection](https://github.com/lowRISC/opentitan/blob/a78922f14a8cc20c7ee569f322a04626f2ac6127/hw/ip/pinmux/pinmux_reg.core).
 - [OpenTitan lifecycle architecture](https://github.com/lowRISC/opentitan/tree/7a3ad34b6d483f4d1d69ac670ddb1c45f1172e19/hw/ip/lc_ctrl/doc).
 - [OpenTitan TL DV agent](https://github.com/lowRISC/opentitan/tree/7a3ad34b6d483f4d1d69ac670ddb1c45f1172e19/hw/dv/sv/tl_agent).
+
+## Updated standards and collateral evidence
+
+See POWER_COLLATERAL.md and pilots/opentitan-clamp-inventory.json. The current
+IEEE GET catalog offers 1801-2024 with account sign-in; 2018 is superseded. Edition
+choice needs reconciliation with accessible normative text before semantic work.
+The provisional 2018 target is not a conformance claim. No normative clauses have
+yet been verified; no automatic substitution of a newer edition is allowed.
+
+OpenTitan's pinned synthesis collateral does provide six nonzero lifecycle clamp
+requirements. Therefore the blocker is incomplete power intent and binding data,
+not absence of every power-related artifact. Prioritize a future implementation
+check for these six exact port bits: match elaborated endpoints, resolve strategy
+applicability and precedence using the selected edition, verify library clamp and
+control polarity, then test power transitions with the real lifecycle decoder.
+The nonzero list alone does not specify the remaining bits, power states, drivers,
+control sequencing or a complete isolation strategy. Never invent those inputs.
