@@ -1,0 +1,5 @@
+# QD-owned syntax fixture, not design-owner power intent.
+upf_version 4.0
+create_power_domain PD -elements {u_block}
+create_supply_net {VDD VSS}
+set_domain_supply_net PD -primary_power_net VDD -primary_ground_net VSS

@@ -131,7 +131,9 @@ def covers(element, path):
     return path == element or path.startswith(element + "/")
 
 
-def check(upf_text, upf_path, topology, topo_path, topo_error=None):
+def check(upf_text, upf_path, topology, topo_path, topo_error=None, edition='legacy'):
+    if edition not in ('legacy', '1801-2024'):
+        raise ValueError('unsupported edition: '+str(edition))
     diags = []
     text = upf_text.replace("\r\n", "\n")
     starts = [0] + [k + 1 for k, ch in enumerate(text) if ch == "\n"]
@@ -146,6 +148,16 @@ def check(upf_text, upf_path, topology, topo_path, topo_error=None):
     report = {"tool": "qd-upf", "version": VERSION, "diagnostics": diags,
               "domains": {}, "crossings": []}
 
+    if edition == '1801-2024':
+        report['standard'] = {
+            'edition': 'IEEE 1801-2024', 'upf_version': '4.0',
+            'conformance_established': False,
+            'scope': 'version-statement audit plus legacy static checks; no Tcl execution',
+            'unimplemented': ['edition-complete command and scope semantics',
+                              'RTL/netlist binding and implementation checks',
+                              'power-aware runtime and Tcl return/substitution behavior']}
+        report['version_statements'] = []
+
     # --- syntax: any failure here stops before semantic checks (fail closed) ---
     try:
         cmds = lex(text)
@@ -155,6 +167,18 @@ def check(upf_text, upf_path, topology, topo_path, topo_error=None):
     parsed = []
     for words in cmds:
         (name, pos), args = words[0], words[1:]
+        if name == 'upf_version' and edition == '1801-2024':
+            # IEEE 1801-2024 6.61: audit intent; this parser executes no query.
+            if len(args) > 1:
+                diag('error', 'BAD_ARGS', loc(pos), 'upf_version: expected zero or one string')
+                continue
+            intended = args[0][0] if args else None
+            report['version_statements'].append({
+                'location': loc(pos), 'intended_version': intended, 'runtime_return_value': None})
+            if intended is not None and intended != '4.0':
+                diag('error', 'UNSUPPORTED_VERSION', loc(args[0][1]),
+                     f'2024 audit supports intended version 4.0 only, got {intended!r}')
+            continue
         if name not in SCHEMA:
             diag("error", "UNSUPPORTED", loc(pos), f"unsupported command '{name}'")
             continue
@@ -340,6 +364,10 @@ def check(upf_text, upf_path, topology, topo_path, topo_error=None):
                  f"crossing '{c['name']}' ({c['source']} -> {c['destination']}, "
                  f"{c['signal']}) has differing primary power and no declared isolation")
 
+    if edition == '1801-2024':
+        diag('unknown', 'EDITION_UNVERIFIED', upf_path,
+             'IEEE 1801-2024 conformance and runtime behavior are not established; '
+             'results are version-statement audit plus legacy static checks')
     sevs = {d["severity"] for d in diags}
     report["result"] = "error" if "error" in sevs else "unknown" if sevs else "ok"
     return report
@@ -352,6 +380,8 @@ def main(argv=None):
     chk.add_argument("upf")
     chk.add_argument("--topology", required=True, help="JSON list of crossings")
     chk.add_argument("--json", action="store_true", help="machine-readable output")
+    chk.add_argument('--edition', choices=('legacy', '1801-2024'), default='legacy',
+                     help='2024 clause audit remains UNKNOWN; does not enable a conforming runtime')
     a = ap.parse_args(argv)
     try:
         with open(a.upf, encoding="utf-8") as f:
@@ -365,7 +395,7 @@ def main(argv=None):
         topology, topo_error = json.loads(topo_text), None
     except json.JSONDecodeError as e:
         topology, topo_error = None, f"invalid JSON at line {e.lineno} column {e.colno}: {e.msg}"
-    r = check(upf_text, a.upf, topology, a.topology, topo_error)
+    r = check(upf_text, a.upf, topology, a.topology, topo_error, edition=a.edition)
     if a.json:
         print(json.dumps(r, indent=2, sort_keys=True))
     else:
