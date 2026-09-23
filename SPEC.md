@@ -22,3 +22,14 @@ Interpret create_supply_net's positional argument as a bounded Tcl list, creatin
 each unique name once per IEEE 1801-2024 6.25.1. Reject empty or unsupported list
 forms before semantics. Preserve the single-name interface and existing duplicate
 checks across commands. This does not add other supply or runtime semantics.
+
+## Explicit 2024 audit contract
+
+Add an opt-in --edition 1801-2024 static audit alongside the unchanged legacy
+lane. Audit upf_version's optional intended-version argument against IEEE
+1801-2024 6.61, retaining location and null runtime return (no Tcl execution).
+Reject unsupported version strings and arity before semantics. Record the target
+edition, unimplemented capabilities and false conformance status on every report.
+Existing static results do not establish edition conformance: successful syntax
+and consistency checks remain UNKNOWN; errors retain precedence. No runtime or
+full command semantics are added by accepting a marker.

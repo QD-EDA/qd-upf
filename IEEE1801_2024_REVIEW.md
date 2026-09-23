@@ -20,7 +20,7 @@ numbers are one higher for these clauses.
 | `create_supply_net` | 6.25 and 6.25.1, p.151 | The standard accepts a list of net names. The prototype treats one positional word as one name. Domain/reuse are legacy arguments; resolution, scope, tunneling and supply-state behavior are not implemented. A braced list must not silently become one literal net name in a future edition-specific parser. |
 | `set_domain_supply_net` | 6.46, pp.195–196 | Explicitly legacy. It associates the primary supply set's power/ground functions with nets. The prototype's name checks do not implement supply-set semantics; retaining legacy syntax must not imply complete semantic support. |
 | `set_isolation` | 6.48, syntax p.198 | Elements, clamp value and isolation signal are optional in the standard's syntax, while the prototype requires all three. The standard admits additional clamp forms and strategy options. Existing source-side matching is not a normative implementation of strategy applicability, precedence, location or inserted behavior. The rest of this clause and referenced clauses still require review. |
-| `upf_version` | 6.61, p.243 | The optional argument documents the intended UPF version; the command returns the tool's interpretation version. This edition specifies 4.0. Accepting a version marker alone cannot establish conformance, and a non-evaluating dialect cannot silently pretend to provide general Tcl return/substitution behavior. Currently unsupported. |
+| `upf_version` | 6.61, p.243 | The optional argument documents the intended UPF version; the command returns the tool's interpretation version. This edition specifies 4.0. Accepting a version marker alone cannot establish conformance, and a non-evaluating dialect cannot silently pretend to provide general Tcl return/substitution behavior. The opt-in audit now records this statement without executing a return value; legacy mode still rejects it. See EDITION_AUDIT_EVIDENCE.md. |
 
 ## Implementation order grounded in these findings
 
@@ -40,4 +40,4 @@ numbers are one higher for these clauses.
 The standard's complete runtime semantics, normative examples, exceptions,
 conformance requirements and Icarus/UVM integration have not yet been audited.
 This document records exactly what has been read so far and what still needs
-proof. No new parser behavior or production qualification is delivered here.
+proof. This initial review is historical; subsequent supply-list and edition-audit slices are recorded in their evidence documents. No production qualification is established.

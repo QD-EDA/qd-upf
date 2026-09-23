@@ -138,3 +138,15 @@ and backslash escapes are rejected. No Tcl substitutions are executed.
 This corrects list interpretation only. Scope-aware supply objects, supply sets,
 resolution, tunneling, reuse, connectivity and power-aware simulation remain
 unsupported. See [supply-list evidence](SUPPLY_LIST_EVIDENCE.md).
+
+## Explicit edition audit
+
+`--edition 1801-2024` adds an IEEE 1801-2024 reference/capability record and audits
+`upf_version [4.0]` statements with precise locations. It preserves the existing
+static checks but always reports edition qualification UNKNOWN (exit 3), unless
+an error requires exit 1. This option does not enable a conforming interpreter.
+Version queries are not executed; recorded runtime return values are null.
+Unsupported version strings fail; substitutions remain unsupported. Default
+`--edition legacy` preserves existing behavior and rejects upf_version commands.
+See [edition audit evidence](EDITION_AUDIT_EVIDENCE.md) for the normative anchor,
+commands, report fields, test results and remaining runtime work.
