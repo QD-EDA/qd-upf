@@ -205,6 +205,16 @@ def check(upf_text, upf_path, topology, topo_path, topo_error=None):
                 diag("error", "BAD_ARGS", loc(vpos), f"{name}: {opt} is empty")
                 bad = True
         if not bad:
+            if name == 'create_supply_net':
+                value, value_pos = positional[0]
+                try:
+                    names = split_list(value)
+                    if not names or not all(name.strip() for name in names):
+                        raise ValueError('expected nonempty supply-net names')
+                except ValueError as error:
+                    diag('error', 'BAD_ARGS', loc(value_pos), f'{name}: {error}')
+                    continue
+                positional[0] = (list(dict.fromkeys(names)), value_pos)
             parsed.append((name, positional[0], opts, pos))
     if diags:
         report["result"] = "error"
@@ -234,10 +244,14 @@ def check(upf_text, upf_path, topology, topo_path, topo_error=None):
                 else:
                     owners[e] = obj
         elif name == "create_supply_net":
-            if obj in nets:
-                diag("error", "DUPLICATE", loc(opos), f"supply net '{obj}' already declared")
-            elif "-domain" not in opts or known("power domain", domains, *opts["-domain"]):
-                nets[obj] = loc(pos)
+            if "-domain" in opts and not known("power domain", domains, *opts["-domain"]):
+                continue
+            # IEEE 1801-2024 6.25.1: create each unique name in this list.
+            for net_name in obj:
+                if net_name in nets:
+                    diag("error", "DUPLICATE", loc(opos), f"supply net '{net_name}' already declared")
+                else:
+                    nets[net_name] = loc(pos)
         elif name == "set_domain_supply_net":
             if not known("power domain", domains, obj, opos):
                 continue

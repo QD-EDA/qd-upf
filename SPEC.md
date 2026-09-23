@@ -15,3 +15,10 @@ Supported intent: `create_power_domain` with `-elements`; `create_supply_net`; `
 Checks: duplicate names; unknown or multiply-owned elements; missing/unknown primary supplies; malformed/unknown isolation references; uncovered cross-domain output when independently powered domains are declared. Emit deterministic diagnostics, a nonzero status for errors, and a machine-readable JSON option. A topology without enough information is reported as unknown rather than passed.
 
 Tests: a valid two-domain example with isolation; duplicate domain; unknown supply; missing isolation; unsupported Tcl substitution fails closed; braced multiword parsing and comments. Use Python standard library if possible. Freeze these cases before implementation; no hidden network or source edits. Keep changes only in this repository. Add a concise README, Apache-2.0 license, and runnable test command. Do not commit, push, or create a GitHub repo; coordinator owns publication.
+
+## Supply-name list correction
+
+Interpret create_supply_net's positional argument as a bounded Tcl list, creating
+each unique name once per IEEE 1801-2024 6.25.1. Reject empty or unsupported list
+forms before semantics. Preserve the single-name interface and existing duplicate
+checks across commands. This does not add other supply or runtime semantics.
