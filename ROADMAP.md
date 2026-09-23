@@ -1,4 +1,8 @@
-# QD-UPF: edition-pinned intent and implementation checks
+# QD-UPF: UPF implementation for power-aware Icarus Verilog and UVM
+
+## Intended product (scope clarified 2026-09-23)
+
+QD-UPF will be a UPF tool and an extension of Icarus Verilog and its UVM flow, implementing edition-pinned power-aware elaboration and simulation. Static intent analysis is a supporting capability, not the final product. The current executable is only a bounded static prototype; no power-aware runtime is implemented today.
 
 ## Current capability
 
@@ -32,11 +36,25 @@ not consulted. `isolation_declared` is not implemented isolation.
    values and supply connectivity. Emit unsupported/UNKNOWN for unmodeled library
    semantics, hierarchy, modes or power states. Keep declaration and implementation
    results separate.
-4. **Production qualification:** edition + exact command subset + named domains,
+4. **Icarus/UVM implementation:** pin an Icarus compiler/runtime revision and UVM
+   implementation, then establish a reviewed compiler/runtime integration point.
+   Do not assume VPI callbacks or a source wrapper can implement all required
+   scheduling semantics. First implement a normative, bounded domain on/off and
+   isolation slice with four-state corruption and recovery behavior. Then add
+   retention save/restore, supply/power-state transitions, level-shifter models
+   and switch behavior according to the edition conformance table. Expose power
+   control and observation to plain SV and UVM sequences/monitors; support checking
+   of power-up/down ordering, reset interactions and expected corruption. Every
+   runtime semantic needs a positive, negative and boundary timing test plus an
+   independent power-aware simulator oracle. Unsupported semantics must fail
+   elaboration or remain explicitly UNKNOWN, never silently simulate as always-on.
+5. **Production qualification:** edition + exact command subset + named domains,
    states, mapped library and design revisions. Compare against a licensed
    independent low-power checker and power-aware simulation with injected intent
    and implementation faults. Qualify only that intersection; no dynamic power,
-   analog voltage, IR-drop, or full IEEE 1801 conformance claim.
+   analog voltage, IR-drop, or full IEEE 1801 conformance claim. Qualification
+   must include the QD-UPF Icarus runtime and UVM integration, not just checks
+   against someone else's simulator.
 
 ## Evidence and release criteria
 
@@ -44,18 +62,29 @@ not consulted. `isolation_declared` is not implemented isolation.
   operating-state matrix and constraints. Outputs: located parser/semantic
   diagnostics, ownership and crossing inventory, intent-to-cell matches,
   unsupported coverage and evidence references in deterministic JSON.
+  Runtime inputs additionally include power-control stimulus and the pinned
+  Icarus/UVM build; outputs include the power-aware simulation artifact, resolved
+  domain/supply bindings, timestamped power/corruption/retention events and UVM
+  results. Preserve the ordinary no-UPF simulation lane and its passing behavior.
 - Corpus: retain 22 cases; add edition-specific legal/illegal examples, Tcl
   nesting/escaping adversarial cases, sink/source isolation, voltage/state
   combinations, missing controls, swapped clamps, retention ordering, switch
   controls, hierarchical names and unconnected supplies. Fixtures only for faults.
+  Add event-order/delta-cycle tests, X/Z propagation, repeated power cycling,
+  isolation-before-off, retention ordering and reset while a domain is off.
 - Oracles: normative clause table with edition/page/section citations, second
   parser/checker, independent netlist tracing and power-aware simulation. A
   tutorial is context, not normative authority. Record access limitations.
 - Version matrix: Python 3.9/3.14, IEEE 1801-2018 only initially; pin frontend,
   synthesis tool, library revision and independent simulator/checker versions
   when owner inputs are available. Other editions remain unsupported.
+  Pin Icarus compiler and vvp runtime together, the UVM source revision and any
+  simulator extension ABI; requalify on changes to these versions.
 - Targets: 10k intent commands and 100k derived crossings <=30 s/2 GiB;
   per-state pilot simulation <=10 min; timeouts are incomplete evidence.
+  Initial runtime target: <=2x wall time and <=2x peak RSS versus the same pinned
+  always-on fixture, median of five runs with identical stimulus and build flags;
+  report overhead separately from compile/elaboration cost. This is unmeasured.
 - Release: every supported semantic has authoritative traceability and positive,
   negative and boundary cases; all pilot crossings accounted for; all state/cell
   comparisons reviewed; zero unexplained oracle disagreement. Until normative

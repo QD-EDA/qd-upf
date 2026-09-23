@@ -1,5 +1,11 @@
 # qd-upf
 
+## Product direction
+
+QD-UPF will be a UPF tool and an extension of Icarus Verilog and its UVM flow, implementing edition-pinned power-aware elaboration and simulation. Static intent analysis is a supporting capability, not the final product. The current executable is only a bounded static prototype; no power-aware runtime is implemented today.
+
+## Current prototype
+
 QD-UPF v0 is a small static checker for an explicit subset of IEEE 1801 (UPF) power intent.
 It looks for inconsistent power intent before RTL integration, for example in Caliptra-style designs.
 
