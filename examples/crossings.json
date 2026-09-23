@@ -1,0 +1,4 @@
+[
+  {"name": "core_irq", "source": "PD_CORE", "destination": "PD_AON", "signal": "u_core/irq"},
+  {"name": "core_rdata_valid", "source": "PD_CORE", "destination": "PD_AON", "signal": "u_core/rdata_valid"}
+]

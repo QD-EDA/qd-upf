@@ -1,0 +1,20 @@
+# QD-UPF v0 example: always-on domain plus a switchable core domain.
+create_power_domain PD_AON  -elements {u_aon}
+create_power_domain PD_CORE -elements {u_core}
+
+create_supply_net VDD_AON     -domain PD_AON
+create_supply_net VSS         -domain PD_AON
+create_supply_net VDD_CORE_SW -domain PD_CORE
+
+set_domain_supply_net PD_AON  -primary_power_net VDD_AON     -primary_ground_net VSS
+set_domain_supply_net PD_CORE -primary_power_net VDD_CORE_SW -primary_ground_net VSS
+
+# Clamp core outputs low while PD_CORE is off.
+set_isolation iso_core_out \
+    -domain PD_CORE \
+    -elements {u_core/irq u_core/rdata_valid} \
+    -clamp_value 0 \
+    -isolation_signal u_aon/iso_en \
+    -isolation_sense high \
+    -isolation_power_net VDD_AON \
+    -isolation_ground_net VSS
