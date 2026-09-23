@@ -50,13 +50,13 @@ All four fields must be non-empty strings. Unknown results come from these cases
 
 ## Supported UPF subset
 
-Each command takes exactly one positional name, and each option takes exactly one value. Any other command or option is rejected with its `line:col`.
+Each command takes one positional argument, and each supported option takes exactly one value. `create_supply_net` takes a Tcl list of net names; the other supported commands take one name. Any other command or option is rejected with its `line:col`.
 Option names must use ASCII `-`. Some published examples use typographic en-dashes (`–elements`), and those are rejected.
 
 | command | required | optional |
 |---|---|---|
 | `create_power_domain <pd>` | `-elements {list}` | – |
-| `create_supply_net <net>` | – | `-domain <pd>` |
+| `create_supply_net <net_name_list>` | – | `-domain <pd>` |
 | `set_domain_supply_net <pd>` | `-primary_power_net <net>` `-primary_ground_net <net>` | – |
 | `set_isolation <strategy>` | `-domain <pd>` `-elements {list}` `-clamp_value 0\|1` `-isolation_signal <sig>` | `-isolation_sense high\|low` `-applies_to inputs\|outputs\|both` `-isolation_power_net <net>` `-isolation_ground_net <net>` |
 
@@ -124,3 +124,17 @@ The [OpenTitan collateral audit](POWER_COLLATERAL.md) records six published
 nonzero lifecycle clamp requirements and a reproducible inventory. It is not a
 complete UPF file or proof of installed isolation. The full runtime and
 edition-qualified semantics remain roadmap work.
+
+## Supply-net name lists
+
+`create_supply_net {VDD VSS}` creates two names. Repeated names within that list
+are created once, following IEEE 1801-2024 §6.25.1 (p.151); a later command that
+redeclares an existing net still reports DUPLICATE in the bounded dialect.
+Single-name commands are unchanged. Empty names and unsupported list syntax
+produce BAD_ARGS before semantic checking. The non-evaluating list syntax remains
+bounded: nested braces are supported, but quoted elements inside a braced list
+and backslash escapes are rejected. No Tcl substitutions are executed.
+
+This corrects list interpretation only. Scope-aware supply objects, supply sets,
+resolution, tunneling, reuse, connectivity and power-aware simulation remain
+unsupported. See [supply-list evidence](SUPPLY_LIST_EVIDENCE.md).
