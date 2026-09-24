@@ -6,21 +6,22 @@ QD-UPF will be a UPF tool and an extension of Icarus Verilog and its UVM flow, i
 
 ## Current capability
 
-Baseline `f4dd49d634f8661806b75c55d01ba46c7ce1268a`: 22 Python tests;
-CI runs `python3 -m unittest discover -s tests -v`. Four command families use
-bounded non-evaluating Tcl syntax. Checks cover names, supplies, ownership and
-source-side isolation declarations against hand-authored topology. No edition
-conformance is established; the README explicitly says normative IEEE text was
-not consulted. `isolation_declared` is not implemented isolation.
+At `ea4f6a6`, 34 Python tests pass; CI runs
+`python3 -m unittest discover -s tests -v`. Four command families use bounded
+non-evaluating Tcl syntax. Checks cover names, supplies, ownership and source-side
+isolation declarations against hand-authored topology. The supplied IEEE 1801-2024
+text has been consulted for supply-name lists (§6.25.1, p.151) and `upf_version`
+(§6.61, p.243). The opt-in edition audit records version statements but reports
+UNKNOWN absent errors. No edition conformance or power-aware runtime is established;
+`isolation_declared` is not implemented isolation.
 
 ## Stages and interfaces
 
-1. **Next useful slice:** target the user-supplied IEEE 1801-2024 (UPF 4.0) and
-   make a command/option/semantic-clause conformance table against legally
-   accessible authoritative text. Obtain access before implementing additional
-   semantics. Retain the legacy bounded dialect as such; a requested unsupported
-   edition must fail. Validate normative examples and reject unsupported Tcl
-   without evaluation. No added commands justified only by tutorials.
+1. **Normative contract:** complete the command/option/semantic-clause matrix for
+   the supplied IEEE 1801-2024 (UPF 4.0) text. The supply-list and version-statement
+   reviews are partial, not edition conformance. Retain the legacy bounded dialect;
+   unsupported editions and Tcl constructs must fail explicitly. Validate normative
+   examples before adding semantics; no command is justified only by tutorials.
 2. **Pinned pilot:** use Caliptra `caliptra_top` generic and OpenTitan Earlgrey
    power-manager hierarchy as topology targets. First acquire design-owner
    power intent, library isolation/retention/level-shifter semantics, operating
@@ -39,8 +40,18 @@ not consulted. `isolation_declared` is not implemented isolation.
 4. **Icarus/UVM implementation:** pin an Icarus compiler/runtime revision and UVM
    implementation, then establish a reviewed compiler/runtime integration point.
    Do not assume VPI callbacks or a source wrapper can implement all required
-   scheduling semantics. First implement a normative, bounded domain on/off and
-   isolation slice with four-state corruption and recovery behavior. Then add
+   scheduling semantics. The next integration microfixture is QD-owned: one scalar
+   crossing, one high-active clamp-1 isolation stage with explicit isolation supply,
+   and NORMAL/CORRUPT supply states. IEEE 1801-2024 §6.48 (pp.198–204) defines the
+   strategy; §9.8 (pp.286–287) defines pass-through, clamp and corruption behavior;
+   §§4.8, 9.5–9.6 (pp.57–58, 273–276) define the relevant simstates and transitions.
+   Test a legal clamp, wrong-clamp/polarity faults, X/Z control, isolation-supply
+   loss, simultaneous changes and repeated cycles against an independent truth table.
+   The current parser does not accept `-isolation_supply` or bind elaborated ports,
+   and no Icarus power-aware runtime exists. A truth table is a development oracle;
+   an independent power-aware simulator is still unavailable, so this fixture cannot
+   qualify runtime semantics. After this integration check, implement a bounded
+   domain on/off and isolation slice with four-state corruption and recovery. Then add
    retention save/restore, supply/power-state transitions, level-shifter models
    and switch behavior according to the edition conformance table. Expose power
    control and observation to plain SV and UVM sequences/monitors; support checking
@@ -66,7 +77,7 @@ not consulted. `isolation_declared` is not implemented isolation.
   Icarus/UVM build; outputs include the power-aware simulation artifact, resolved
   domain/supply bindings, timestamped power/corruption/retention events and UVM
   results. Preserve the ordinary no-UPF simulation lane and its passing behavior.
-- Corpus: retain 22 cases; add edition-specific legal/illegal examples, Tcl
+- Corpus: retain 34 cases; add edition-specific legal/illegal examples, Tcl
   nesting/escaping adversarial cases, sink/source isolation, voltage/state
   combinations, missing controls, swapped clamps, retention ordering, switch
   controls, hierarchical names and unconnected supplies. Fixtures only for faults.
@@ -87,8 +98,9 @@ not consulted. `isolation_declared` is not implemented isolation.
   report overhead separately from compile/elaboration cost. This is unmeasured.
 - Release: every supported semantic has authoritative traceability and positive,
   negative and boundary cases; all pilot crossings accounted for; all state/cell
-  comparisons reviewed; zero unexplained oracle disagreement. Until normative
-  and design-owner inputs exist, remain an explicitly bounded prototype.
+  comparisons reviewed; zero unexplained oracle disagreement. Until the semantic
+  matrix, runtime oracle and design-owner inputs exist, remain an explicitly bounded
+  prototype.
 
 ## Qualification contract
 
@@ -153,11 +165,10 @@ Primary source anchors (review pinned source, not just current web documentation
 
 ## Updated standards and collateral evidence
 
-See POWER_COLLATERAL.md and pilots/opentitan-clamp-inventory.json. The current
-IEEE GET catalog offers 1801-2024 with account sign-in; 2018 is superseded. Edition
-choice needs reconciliation with accessible normative text before semantic work.
-The provisional 2018 target is not a conformance claim. No normative clauses have
-yet been verified; no automatic substitution of a newer edition is allowed.
+See POWER_COLLATERAL.md and pilots/opentitan-clamp-inventory.json. Its standards
+access discussion predates the user-supplied IEEE 1801-2024 PDF. The 2018 target
+was provisional and is superseded by the explicit 2024 audit; partial clause review
+does not establish edition conformance.
 
 OpenTitan's pinned synthesis collateral does provide six nonzero lifecycle clamp
 requirements. Therefore the blocker is incomplete power intent and binding data,
