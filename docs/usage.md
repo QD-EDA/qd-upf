@@ -65,7 +65,7 @@ Option names must use ASCII `-`. Some published examples use typographic en-dash
 ### Syntax sources
 
 The syntax was checked against the downloaded text of these sources. The PDFs typeset option dashes as en-dashes (`–domain`); they are normalized to `-` in the quotes below.
-- IEEE Std 1801-2024 (UPF 4.0) is now available from a user-supplied licensed PDF. The [initial normative review](IEEE1801_2024_REVIEW.md) identifies clauses and gaps against the existing dialect. That partial review does not establish edition conformance; the original prototype was based on the tutorial sources below.
+- IEEE Std 1801-2024 (UPF 4.0) is now available from a user-supplied licensed PDF. The [initial normative review](../IEEE1801_2024_REVIEW.md) identifies clauses and gaps against the existing dialect. That partial review does not establish edition conformance; the original prototype was based on the tutorial sources below.
 - VLSI Tutorials, "UPF – Low Power VLSI". It shows `create_power_domain … -elements {…}` (including nested `{{a/b}}`), `create_supply_net … -domain`, `set_domain_supply_net … -primary_power_net … -primary_ground_net …`, and `set_isolation … -domain -isolation_power_net -isolation_ground_net -clamp_value -elements {…}`: <https://vlsitutorials.com/upf-low-power-vlsi/>
 - R. Koster, J. Redmond, S. Ramachandra, "Failing to Fail: Achieving Success in Advanced Low Power Design using UPF", ISLPED 2014 tutorial (Mentor/Broadcom/Synopsys). It shows `set_isolation sw_iso_c0 -domain PD_IP -applies_to outputs -clamp_value 0 -isolation_signal iso -isolation_sense high -location self`, `-clamp_value {1}` (braced value), and `create_supply_net sw1_out_net` (no `-domain`): <https://islped.org/2014/files/Failing%20to%20fail%20UPF%20tutorial%20.pdf>
 - A. Srivastava, M. Bhargava (Mentor Graphics), "Stepping into UPF 2.1 world", DVCon. It shows `set_isolation iso_tx -domain pd_tx … -applies_to outputs`, `set_isolation iso_rx -domain pd_rx … -applies_to inputs`, `set_isolation iso -domain pd_hardIP -applies_to both`, `create_power_domain … -elements {…}`, and backslash line continuation: <https://dvcon-proceedings.org/wp-content/uploads/stepping-into-upf-2-1-world-easy-solution-to-complex-power-aware-verification.pdf>
@@ -113,14 +113,14 @@ python3 -m unittest discover -s tests -v
 
 ## License
 
-Apache License 2.0; see [LICENSE](LICENSE).
+Apache License 2.0; see [LICENSE](../LICENSE).
 
-See [the staged qualification roadmap](ROADMAP.md) for named pilots, unsupported
+See [the staged qualification roadmap](../ROADMAP.md) for named pilots, unsupported
 cases, independent oracles, performance targets and release gates.
 
 ## Pinned power collateral
 
-The [OpenTitan collateral audit](POWER_COLLATERAL.md) records six published
+The [OpenTitan collateral audit](../POWER_COLLATERAL.md) records six published
 nonzero lifecycle clamp requirements and a reproducible inventory. It is not a
 complete UPF file or proof of installed isolation. The full runtime and
 edition-qualified semantics remain roadmap work.
@@ -137,7 +137,7 @@ and backslash escapes are rejected. No Tcl substitutions are executed.
 
 This corrects list interpretation only. Scope-aware supply objects, supply sets,
 resolution, tunneling, reuse, connectivity and power-aware simulation remain
-unsupported. See [supply-list evidence](SUPPLY_LIST_EVIDENCE.md).
+unsupported. See [supply-list evidence](../SUPPLY_LIST_EVIDENCE.md).
 
 ## Explicit edition audit
 
@@ -148,7 +148,7 @@ an error requires exit 1. This option does not enable a conforming interpreter.
 Version queries are not executed; recorded runtime return values are null.
 Unsupported version strings fail; substitutions remain unsupported. Default
 `--edition legacy` preserves existing behavior and rejects upf_version commands.
-See [edition audit evidence](EDITION_AUDIT_EVIDENCE.md) for the normative anchor,
+See [edition audit evidence](../EDITION_AUDIT_EVIDENCE.md) for the normative anchor,
 commands, report fields, test results and remaining runtime work.
 
 ## Status
