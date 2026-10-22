@@ -4,7 +4,7 @@ Conservative static checker for a subset of UPF power intent (not a power-aware 
 
 ```sh
 ./qd-upf check examples/valid.upf --topology examples/crossings.json
-python3 -m unittest -v
+python3 -m unittest discover -s tests -v
 ```
 
 Full usage, limits and scope: [docs/usage.md](docs/usage.md). Spec: [SPEC.md](SPEC.md).
