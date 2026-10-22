@@ -150,3 +150,7 @@ Unsupported version strings fail; substitutions remain unsupported. Default
 `--edition legacy` preserves existing behavior and rejects upf_version commands.
 See [edition audit evidence](EDITION_AUDIT_EVIDENCE.md) for the normative anchor,
 commands, report fields, test results and remaining runtime work.
+
+## Status
+
+Active prototype, Sep 2026.
